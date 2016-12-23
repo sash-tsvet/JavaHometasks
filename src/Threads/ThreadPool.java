@@ -3,7 +3,7 @@ package Threads;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DummyThreadPool {
+public class ThreadPool {
     private final int threadNum;
     private final LinkedList<Runnable> workQueue;
     private final ThreadWorker[] threadWorkers;
@@ -13,7 +13,7 @@ public class DummyThreadPool {
     private volatile int cancelledTasks;
     private int tasksNum;
 
-    public DummyThreadPool(int threadNum) {
+    public ThreadPool(int threadNum) {
         this.threadNum = threadNum;
         workQueue = new LinkedList<Runnable>();
 
@@ -86,5 +86,38 @@ public class DummyThreadPool {
                 }
             }
         }
+    }
+    public static void main(String[] args) {
+        Runner[] runners = new Runner[14];
+        for (int i=0; i <14; i++){
+           runners[i] = new Runner(i);
+        }
+
+        ExecutionManager manager = new ExecutionManagerImpl();
+
+        manager.execute(new Exiter(), runners);
+
+    }
+
+}
+
+class Runner implements Runnable {
+
+    Integer number;
+
+    public Runner(Integer number) {
+        this.number = number;
+    }
+
+    @Override
+    public void run() {
+        System.out.println(number);
+    }
+}
+
+class Exiter implements Runnable {
+    @Override
+    public void run() {
+        System.exit(0);
     }
 }

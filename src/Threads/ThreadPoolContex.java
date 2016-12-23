@@ -2,11 +2,19 @@ package Threads;
 
 
 public class ThreadPoolContex implements Context {
-    private final DummyThreadPool dummyThreadPool;
+    private final ThreadPool dummyThreadPool;
 
-    public ThreadPoolContex(DummyThreadPool dummyThreadPool, Runnable[] runnables) {
+    public ThreadPoolContex(ThreadPool dummyThreadPool, Runnable[] runnables, Runnable callback) {
         this.dummyThreadPool = dummyThreadPool;
         dummyThreadPool.executeAll(runnables);
+        while(!dummyThreadPool.isFinished()){
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        callback.run();
     }
 
     @Override
